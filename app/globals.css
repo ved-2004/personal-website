@@ -1,0 +1,101 @@
+@import "tailwindcss";
+
+/* =========================
+   Global Design Tokens
+   ========================= */
+:root {
+  --bg: #FFFCE8;
+  --text: #0f172a;
+  --muted: #1446A0;
+  --primary: #832232;
+  --accent: #EF8354;
+  --border: #7EB2DD;
+  --link: #832232;
+}
+
+/* =========================
+   Base Reset
+   ========================= */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+/* =========================
+   Typography & Body
+   ========================= */
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-serif);
+  line-height: 1.6;
+}
+
+/* =========================
+   Text Elements
+   ========================= */
+h1,
+h2,
+h3 {
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 0.5em;
+}
+
+h1 {
+  font-size: 2.25rem;
+}
+
+h2 {
+  font-size: 1.625rem;
+}
+
+p {
+  margin-bottom: 0.75rem;
+}
+
+/* =========================
+   Inline Semantics
+   ========================= */
+a {
+  color: var(--link);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+b {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+em {
+  color: var(--primary);
+  font-style: italic;
+}
+
+/* =========================
+   Structural Helpers
+   ========================= */
+.container {
+  width: min(960px, 92%);
+  margin: 0 auto;
+}
+
+/* =========================
+   Borders / Dividers
+   ========================= */
+hr,
+.border-top {
+  border: none;
+  border-top: 1px solid var(--border);
+}
