@@ -26,14 +26,31 @@ html,
 body {
   margin: 0;
   padding: 0;
+  height: 100%;
+}
+
+.site {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  flex: 1;
+}
+
+.footer {
+  text-align: center;
+  padding: 2rem 0;
+  font-size: 0.9rem;
 }
 
 /* =========================
    Typography & Body
    ========================= */
 body {
-  background: var(--bg);
-  color: var(--text);
+  background-color: var(--bg); /* your beige */
+  color: #1A1A1A;
   font-family: var(--font-serif);
   line-height: 1.6;
 }
@@ -45,7 +62,7 @@ h1,
 h2,
 h3 {
   font-weight: 700;
-  color: var(--primary);
+  color: #990000;
   margin-bottom: 0.5em;
 }
 
@@ -65,11 +82,12 @@ p {
    Inline Semantics
    ========================= */
 a {
-  color: var(--link);
+  color: #990000;
   text-decoration: none;
 }
 
 a:hover {
+  color: #FFCC00;
   text-decoration: underline;
 }
 

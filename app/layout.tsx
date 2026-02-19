@@ -1,4 +1,3 @@
-// app/layout.tsx
 import type { Metadata } from "next";
 import { STIX_Two_Text } from "next/font/google";
 import Link from "next/link";
@@ -23,7 +22,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={stix.variable}>
+      <body className="site">
         <header
           style={{
             position: "sticky",
@@ -37,14 +36,16 @@ export default function RootLayout({
             <Link href="/">Home</Link>
             <Link href="/projects">Projects</Link>
             <Link href="/experience">Experience</Link>
+            <Link href="/education">Education</Link>
+            <Link href="/skills">Skills</Link>
             <Link href="/research">Research</Link>
             <Link href="/writing">Writing</Link>
           </nav>
         </header>
 
-        <main className="container">{children}</main>
+        <main className="content">{children}</main>
 
-        <footer className="container py-10 text-center text-sm text-[var(--muted)] border-t">
+        <footer className="footer">
           © {new Date().getFullYear()} Ved Chadderwala
         </footer>
       </body>
