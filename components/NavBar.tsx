@@ -16,7 +16,7 @@ export default function NavBar() {
   const pathname = usePathname()
 
   return (
-    <nav className="container flex justify-center gap-6 py-3 text-sm">
+    <nav className="container flex flex-wrap justify-center gap-x-5 gap-y-1 py-2 text-sm px-4">
       {links.map(({ href, label }) => {
         const active = href === "/" ? pathname === "/" : pathname.startsWith(href)
         return (

@@ -48,7 +48,7 @@ export default async function ProjectsPage() {
 
   return (
     <main className="page-main">
-      <div style={{ display: "flex", gap: "3rem", alignItems: "flex-start" }}>
+      <div className="projects-layout" style={{ display: "flex", gap: "3rem", alignItems: "flex-start" }}>
 
         {/* Left: Projects */}
         <div style={{ flex: 1, minWidth: 0 }}>
@@ -61,6 +61,7 @@ export default async function ProjectsPage() {
             {projects.map((proj, idx) => (
               <article
                 key={proj.id}
+                className="project-article"
                 style={{
                   padding: "1.5rem 0",
                   borderTop: idx === 0 ? "none" : "1px solid var(--border)",
@@ -104,10 +105,10 @@ export default async function ProjectsPage() {
         </div>
 
         {/* Vertical divider */}
-        <div style={{ width: "1px", background: "var(--border)", alignSelf: "stretch", flexShrink: 0 }} />
+        <div className="projects-divider" style={{ width: "1px", background: "var(--border)", alignSelf: "stretch", flexShrink: 0 }} />
 
         {/* Right: Skills */}
-        <div style={{ width: 40, flexShrink: 0 }}>
+        <div className="skills-sidebar" style={{ width: 40, flexShrink: 0 }}>
           <h1 style={{ fontSize: "1.5rem", marginBottom: "1rem" }}>Skills</h1>
           {skills.length === 0 && <p className="muted">No entries yet.</p>}
           <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem" }}>

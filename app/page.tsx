@@ -15,7 +15,7 @@ export default async function HomePage() {
   const linkItems = content.filter(i => i.url !== null)
 
   return (
-    <main className="page-main" style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: "3rem", flexWrap: "wrap" }}>
+    <main className="page-main home-layout" style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: "3rem", flexWrap: "wrap" }}>
       {/* Text side */}
       <div style={{ flex: 1, minWidth: 260 }}>
         {get("intro") && (

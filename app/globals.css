@@ -151,3 +151,54 @@ hr,
   border: none;
   border-top: 1px solid var(--border);
 }
+
+/* =========================
+   Responsive / Mobile
+   ========================= */
+@media (max-width: 640px) {
+  .page-main {
+    padding: 1.25rem 1rem;
+  }
+
+  h1 {
+    font-size: 1.75rem;
+  }
+
+  /* Home: stack image below text */
+  .home-layout {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 1.5rem !important;
+  }
+
+  .home-layout > div:first-child {
+    min-width: 0 !important;
+    width: 100%;
+  }
+
+  /* Projects: stack projects + skills sidebar */
+  .projects-layout {
+    flex-direction: column !important;
+    gap: 1.5rem !important;
+  }
+
+  .projects-divider {
+    display: none !important;
+  }
+
+  .skills-sidebar {
+    width: auto !important;
+  }
+
+  /* Projects: stack text + image per article */
+  .project-article {
+    flex-direction: column !important;
+    gap: 1rem !important;
+  }
+
+  /* Research: stack hero image above text */
+  .research-hero {
+    grid-template-columns: 1fr !important;
+    justify-items: center;
+  }
+}

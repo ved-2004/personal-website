@@ -19,7 +19,7 @@ export default async function ResearchPage() {
   return (
     <main className="page-main" style={{ display: "flex", flexDirection: "column", gap: "3.5rem" }}>
       {/* HERO */}
-      <section style={{ display: "grid", gridTemplateColumns: "220px 1fr", gap: "2rem", alignItems: "center" }}>
+      <section className="research-hero" style={{ display: "grid", gridTemplateColumns: "220px 1fr", gap: "2rem", alignItems: "center" }}>
         {heroImageUrl && (
           <ZoomableImage
             src={heroImageUrl}

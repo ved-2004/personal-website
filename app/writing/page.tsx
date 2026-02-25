@@ -15,7 +15,7 @@ export default async function WritingPage() {
   const posts: PostMeta[] = await getWritings()
 
   return (
-    <main style={{ padding: "2rem" }}>
+    <main className="page-main">
       <h1>Writing</h1>
       <p className="muted">Learning, Sharing and Reflecting</p>
 
