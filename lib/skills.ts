@@ -27,6 +27,7 @@ export async function getSkills(): Promise<SkillMeta[]> {
   const resp = await notion.dataSources.query({
     data_source_id: ds,
     filter: { property: "Published", checkbox: { equals: true } },
+    sorts: [{ property: "Order", direction: "ascending" }],
     page_size: 100,
   })
 

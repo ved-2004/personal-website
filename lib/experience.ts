@@ -8,7 +8,9 @@ export type ExperienceMeta = {
   endDate?: string | null
   summary?: string
   location?: string
-  imageUrl?: string | null
+  tags: string[]
+  iconUrl?: string | null
+  mediaUrls: string[]
 }
 
 /**
@@ -21,7 +23,9 @@ export type ExperienceMeta = {
  *   End Date   — Date
  *   Summary    — Rich text
  *   Location   — Rich text
- *   Image      — Files & media (optional)
+ *   Tags       — Multi-select  (skills / tech stack)
+ *   Icon       — Files & media (optional, single — company logo)
+ *   Media      — Files & media (optional, multiple)
  *
  * Set NOTION_EXPERIENCE_DATASOURCE to the data source ID (not database ID).
  * In Notion: open the database → ··· → "Manage data sources" → "Copy data source ID".
@@ -36,7 +40,7 @@ export async function getExperiences(): Promise<ExperienceMeta[]> {
   const resp = await notion.dataSources.query({
     data_source_id: ds,
     filter: { property: "Published", checkbox: { equals: true } },
-    sorts: [{ property: "Start Date", direction: "descending" }],
+    sorts: [{ property: "Order", direction: "ascending" }],
     page_size: 100,
   })
 
@@ -51,7 +55,11 @@ export async function getExperiences(): Promise<ExperienceMeta[]> {
       endDate: p?.["End Date"]?.date?.start ?? null,
       summary: p?.Summary?.rich_text?.[0]?.plain_text ?? undefined,
       location: p?.Location?.rich_text?.[0]?.plain_text ?? undefined,
-      imageUrl: p?.Image?.files?.[0]?.file?.url ?? p?.Image?.files?.[0]?.external?.url ?? null,
+      tags: p?.Tags?.multi_select?.map((t: any) => t.name) ?? [],
+      iconUrl: p?.Icon?.files?.[0]?.file?.url ?? p?.Icon?.files?.[0]?.external?.url ?? null,
+      mediaUrls: (p?.Media?.files ?? [])
+        .map((f: any) => f.file?.url ?? f.external?.url ?? null)
+        .filter(Boolean),
     } satisfies ExperienceMeta
   })
 }

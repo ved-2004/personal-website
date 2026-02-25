@@ -1,65 +1,75 @@
-import Image from "next/image"
-import { getResearchProjects, ResearchMeta } from "@/lib/research"
+import { getResearchProjects } from "@/lib/research"
+import { getImageByName } from "@/lib/images"
+import { getPageContent } from "@/lib/content"
 import ResearchProject from "@/components/ResearchProject"
+import ZoomableImage from "@/components/ZoomableImage"
 
 export const revalidate = 60
 
 export default async function ResearchPage() {
-  const projects: ResearchMeta[] = await getResearchProjects()
+  const [projects, heroImageUrl, content] = await Promise.all([
+    getResearchProjects(),
+    getImageByName(process.env.RESEARCH_PAGE_IMAGE_NAME ?? ""),
+    getPageContent("research"),
+  ])
+
+  const get = (name: string) => content.find(i => i.name === name)?.value ?? ""
+  const heroLinks = content.filter(i => i.name.startsWith("hero-link") && i.url)
 
   return (
-    <main className="max-w-4xl mx-auto px-4 space-y-16">
+    <main className="page-main" style={{ display: "flex", flexDirection: "column", gap: "3.5rem" }}>
       {/* HERO */}
-      <section id="home" className="grid grid-cols-[220px_1fr] gap-8 items-center">
-        <Image
-          src="/images/usc1.jpg"
-          alt="Ved Chadderwala"
-          width={220}
-          height={280}
-          className="rounded-lg border"
-        />
+      <section style={{ display: "grid", gridTemplateColumns: "220px 1fr", gap: "2rem", alignItems: "center" }}>
+        {heroImageUrl && (
+          <ZoomableImage
+            src={heroImageUrl}
+            alt="Ved Chadderwala"
+            style={{ width: 220, height: 280, objectFit: "cover", borderRadius: 8, border: "1px solid var(--border)" }}
+          />
+        )}
 
-        <div className="space-y-3">
-          <p className="text-sm text-slate-500">
-            Graduate Student • Thomas Lord Department of Computer Science •
-            University of Southern California
-          </p>
+        <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+          {get("affiliation") && (
+            <p className="muted">{get("affiliation")}</p>
+          )}
 
-          <div className="flex gap-4 text-sm">
-            <a href="mailto:chadderw@usc.edu">chadderw@usc.edu</a>
-            <a
-              href="https://drive.google.com/file/d/1acli47cQlfbbIUj_1bszztJBJVZ4GNWw/view"
-              target="_blank"
-            >
-              CV
-            </a>
-          </div>
+          {heroLinks.length > 0 && (
+            <div style={{ display: "flex", gap: "1.25rem", fontSize: "0.9rem" }}>
+              {heroLinks.map(i => (
+                <a
+                  key={i.name}
+                  href={i.url!}
+                  target={i.url!.startsWith("mailto") ? undefined : "_blank"}
+                  rel={i.url!.startsWith("mailto") ? undefined : "noreferrer"}
+                >
+                  {i.value}
+                </a>
+              ))}
+            </div>
+          )}
 
-          <p>
-            I&apos;m a first-year MSCS student at USC focused on AI/ML, NLP, and
-            multimodal learning for accessible and trustworthy systems.
-          </p>
+          {get("blurb") && (
+            <p style={{ lineHeight: 1.7 }}>{get("blurb")}</p>
+          )}
         </div>
       </section>
 
       {/* RESEARCH FOCUS */}
-      <section id="focus">
-        <h2 className="text-2xl font-semibold mb-2">Research Focus</h2>
-        <p className="text-sm text-slate-600 mb-2">
-          Trustworthy LLMs | Robust NLP | ML Security
-        </p>
-        <p>
-          I study trustworthy machine learning and NLP, with an emphasis on reliability, robustness,
-          and bias in real-world systems. My work spans inference-time reliability for LLMs, security
-          critical ML for IoT, and ethical limitations of language-based user modeling.
-        </p>
+      <section>
+        <h2>Research Focus</h2>
+        {get("focus-subtitle") && (
+          <p className="muted" style={{ marginBottom: "0.5rem" }}>{get("focus-subtitle")}</p>
+        )}
+        {get("focus-body") && (
+          <p style={{ lineHeight: 1.7 }}>{get("focus-body")}</p>
+        )}
       </section>
 
       {/* PROJECTS */}
-      <section id="projects">
-        <h2 className="text-2xl font-semibold mb-4">Projects</h2>
-        {projects.length === 0 && <p className="text-sm text-slate-500">No projects yet.</p>}
-        <div className="space-y-6">
+      <section>
+        <h2>Projects</h2>
+        {projects.length === 0 && <p className="muted">No projects yet.</p>}
+        <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
           {projects.map((proj) => (
             <ResearchProject
               key={proj.id}

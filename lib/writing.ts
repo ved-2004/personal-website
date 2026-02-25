@@ -11,7 +11,7 @@ export type PostMeta = {
 }
 
 /**
- * Fetch all published posts from a Notion data source (sorted by Date desc).
+ * Fetch all published posts from a Notion data source (in table order).
  *
  * IMPORTANT: NOTION_WRITING_DATASOURCE must be a DATA SOURCE ID, not a database ID.
  * In the Notion app: open your database → ··· menu → "Manage data sources"
@@ -30,7 +30,7 @@ export async function getWritings(): Promise<PostMeta[]> {
       property: "Published",
       checkbox: { equals: true },
     },
-    sorts: [{ property: "Date", direction: "descending" }],
+    sorts: [{ property: "Order", direction: "ascending" }],
     page_size: 100,
   })
 

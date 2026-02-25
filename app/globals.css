@@ -109,6 +109,40 @@ em {
   margin: 0 auto;
 }
 
+.page-main {
+  padding: 2.5rem 2rem;
+  max-width: 870px;
+  margin: 0 auto;
+}
+
+/* =========================
+   Utility Classes
+   ========================= */
+.muted {
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.72rem;
+  padding: 0.18rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(126, 178, 221, 0.13);
+  color: #1446A0;
+  white-space: nowrap;
+  line-height: 1.5;
+}
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.4rem;
+}
+
 /* =========================
    Borders / Dividers
    ========================= */

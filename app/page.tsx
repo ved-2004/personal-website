@@ -1,64 +1,64 @@
-import Image from "next/image";
+import { getImageByName } from "@/lib/images"
+import { getPageContent } from "@/lib/content"
+import ZoomableImage from "@/components/ZoomableImage"
 
-export default function HomePage() {
+export const revalidate = 60
+
+export default async function HomePage() {
+  const [imageUrl, content] = await Promise.all([
+    getImageByName(process.env.HOME_PAGE_IMAGE_NAME ?? ""),
+    getPageContent("home"),
+  ])
+
+  const get = (name: string) => content.find(i => i.name === name)?.value ?? ""
+  const textItems = content.filter(i => !i.url)
+  const linkItems = content.filter(i => i.url !== null)
+
   return (
-    <main className="flex flex-col md:flex-row items-center gap-10 md:gap-16">
+    <main className="page-main" style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: "3rem", flexWrap: "wrap" }}>
       {/* Text side */}
-      <div className="flex-1 space-y-6">
-        <p className="text-xs tracking-[0.3em] uppercase text-slate-400">
-          Hey peeps, I'm Ved!
-        </p>
+      <div style={{ flex: 1, minWidth: 260 }}>
+        {get("intro") && (
+          <p style={{ fontSize: "0.75rem", letterSpacing: "0.25em", textTransform: "uppercase", color: "var(--muted)", marginBottom: "1.25rem" }}>
+            {get("intro")}
+          </p>
+        )}
 
-        <p className="text-slate-300 leading-relaxed max-w-xl">
-          I'm a CS grad student at USC. Lately, I have been studying DL and deriving the architectures by hand. I like building software, and integrating AI into them. I also love to record and write my learnings and brainstorming. 
-        </p>
+        {textItems
+          .filter(i => i.name.startsWith("bio"))
+          .map(i => (
+            <p key={i.name} style={{ lineHeight: 1.7, marginBottom: "0.9rem" }}>
+              {i.value}
+            </p>
+          ))
+        }
 
-        <p className="text-slate-300 leading-relaxed max-w-xl">
-          This space is where I collect what I&apos;ve built, what I&apos;ve
-          worked on, and what I&apos;m still figuring out.
-        </p>
-
-        {/* Links at the end */}
-        <div className="flex flex-wrap gap-4 pt-2 text-sm">
-          <a
-            href="mailto:ved29022004@gmail.com"
-            className="underline underline-offset-4 decoration-slate-500 hover:decoration-slate-100 hover:text-slate-100"
-          >
-            Email
-          </a>
-          <a
-            href="https://github.com/ved-2004"
-            className="underline underline-offset-4 decoration-slate-500 hover:decoration-slate-100 hover:text-slate-100"
-          >
-            GitHub
-          </a>
-          <a
-            href="https://www.linkedin.com/in/ved-chadderwala-196529223/"
-            className="underline underline-offset-4 decoration-slate-500 hover:decoration-slate-100 hover:text-slate-100"
-          >
-            LinkedIn
-          </a>
-          <a
-            href="/Ved_Chadderwala_Resume.pdf"
-            className="underline underline-offset-4 decoration-slate-500 hover:decoration-slate-100 hover:text-slate-100"
-          >
-            Resume
-          </a>
-        </div>
+        {linkItems.length > 0 && (
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "1.25rem", fontSize: "0.9rem", marginTop: "0.6rem" }}>
+            {linkItems.map(i => (
+              <a
+                key={i.name}
+                href={i.url!}
+                target={i.url!.startsWith("mailto") ? undefined : "_blank"}
+                rel={i.url!.startsWith("mailto") ? undefined : "noreferrer"}
+              >
+                {i.value}
+              </a>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Image side */}
-      <div className="flex-1 flex justify-center md:justify-end">
-        <div className="relative w-40 h-40 sm:w-52 sm:h-52 md:w-64 md:h-64 rounded-3xl border border-slate-800 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 overflow-hidden">
-          <Image
-            src="/me.jpeg"
+      {imageUrl && (
+        <div style={{ flexShrink: 0 }}>
+              <ZoomableImage
+            src={imageUrl}
             alt="Photo of Ved"
-            fill
-            className="object-cover"
-            priority
+            style={{ width: 220, height: 220, objectFit: "cover", borderRadius: "1.25rem", border: "1px solid var(--border)" }}
           />
         </div>
-      </div>
+      )}
     </main>
-  );
+  )
 }

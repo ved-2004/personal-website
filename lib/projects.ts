@@ -6,9 +6,10 @@ export type ProjectMeta = {
   description?: string
   status?: string
   tags: string[]
+  team: string[]
   url?: string | null
   githubUrl?: string | null
-  imageUrl?: string | null
+  mediaUrls: string[]
 }
 
 /**
@@ -18,10 +19,11 @@ export type ProjectMeta = {
  *   Title       — Title
  *   Description — Rich text
  *   Status      — Select
- *   Tags        — Multi-select
+ *   Tags        — Multi-select  (skills / tech stack)
+ *   Team        — Multi-select  (LinkedIn URLs of teammates)
  *   URL         — URL
  *   GitHub URL  — URL
- *   Image       — Files & media (optional)
+ *   Media       — Files & media (optional, multiple)
  *
  * Set NOTION_PROJECTS_DATASOURCE to the data source ID (not database ID).
  * In Notion: open the database → ··· → "Manage data sources" → "Copy data source ID".
@@ -36,6 +38,7 @@ export async function getProjects(): Promise<ProjectMeta[]> {
   const resp = await notion.dataSources.query({
     data_source_id: ds,
     filter: { property: "Published", checkbox: { equals: true } },
+    sorts: [{ property: "Order", direction: "ascending" }],
     page_size: 100,
   })
 
@@ -48,9 +51,12 @@ export async function getProjects(): Promise<ProjectMeta[]> {
       description: p?.Description?.rich_text?.[0]?.plain_text ?? undefined,
       status: p?.Status?.select?.name ?? undefined,
       tags: p?.Tags?.multi_select?.map((t: any) => t.name) ?? [],
+      team: p?.Team?.multi_select?.map((t: any) => t.name) ?? [],
       url: p?.URL?.url ?? null,
       githubUrl: p?.["GitHub URL"]?.url ?? null,
-      imageUrl: p?.Image?.files?.[0]?.file?.url ?? p?.Image?.files?.[0]?.external?.url ?? null,
+      mediaUrls: (p?.Media?.files ?? [])
+        .map((f: any) => f.file?.url ?? f.external?.url ?? null)
+        .filter(Boolean),
     } satisfies ProjectMeta
   })
 }

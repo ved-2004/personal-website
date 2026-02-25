@@ -9,7 +9,8 @@ export type EducationMeta = {
   endDate?: string | null
   gpa?: string
   location?: string
-  imageUrl?: string | null
+  iconUrl?: string | null
+  mediaUrls: string[]
 }
 
 /**
@@ -23,7 +24,8 @@ export type EducationMeta = {
  *   End Date    — Date
  *   GPA         — Rich text
  *   Location    — Rich text
- *   Image       — Files & media (optional)
+ *   Icon        — Files & media (optional, single — institution logo)
+ *   Media       — Files & media (optional, multiple)
  *
  * Set NOTION_EDUCATION_DATASOURCE to the data source ID (not database ID).
  * In Notion: open the database → ··· → "Manage data sources" → "Copy data source ID".
@@ -38,7 +40,7 @@ export async function getEducation(): Promise<EducationMeta[]> {
   const resp = await notion.dataSources.query({
     data_source_id: ds,
     filter: { property: "Published", checkbox: { equals: true } },
-    sorts: [{ property: "Start Date", direction: "descending" }],
+    sorts: [{ property: "Order", direction: "ascending" }],
     page_size: 100,
   })
 
@@ -54,7 +56,10 @@ export async function getEducation(): Promise<EducationMeta[]> {
       endDate: p?.["End Date"]?.date?.start ?? null,
       gpa: p?.GPA?.rich_text?.[0]?.plain_text ?? undefined,
       location: p?.Location?.rich_text?.[0]?.plain_text ?? undefined,
-      imageUrl: p?.Image?.files?.[0]?.file?.url ?? p?.Image?.files?.[0]?.external?.url ?? null,
+      iconUrl: p?.Icon?.files?.[0]?.file?.url ?? p?.Icon?.files?.[0]?.external?.url ?? null,
+      mediaUrls: (p?.Media?.files ?? [])
+        .map((f: any) => f.file?.url ?? f.external?.url ?? null)
+        .filter(Boolean),
     } satisfies EducationMeta
   })
 }
