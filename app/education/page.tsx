@@ -49,7 +49,7 @@ export default async function EducationPage() {
               {edu.iconUrl && (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
-                  src={edu.iconUrl}
+                  src={`/api/page-image?pageId=${edu.id}&property=Icon&index=0`}
                   alt={edu.institution}
                   style={{ width: 48, height: 48, objectFit: "contain", flexShrink: 0, borderRadius: 6, border: "1px solid var(--border)" }}
                 />
@@ -81,7 +81,10 @@ export default async function EducationPage() {
                 )}
               </div>
             </div>
-            <MediaGallery urls={edu.mediaUrls} alt={edu.institution} />
+            <MediaGallery
+              urls={edu.mediaUrls.map((_, i) => `/api/page-image?pageId=${edu.id}&property=Media&index=${i}`)}
+              alt={edu.institution}
+            />
           </article>
         ))}
       </div>

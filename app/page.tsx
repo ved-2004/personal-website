@@ -1,27 +1,35 @@
-import { getImageByName } from "@/lib/images"
 import { getPageContent } from "@/lib/content"
 import ZoomableImage from "@/components/ZoomableImage"
 
 export const revalidate = 60
 
 export default async function HomePage() {
-  const [imageUrl, content] = await Promise.all([
-    getImageByName(process.env.HOME_PAGE_IMAGE_NAME ?? ""),
-    getPageContent("home"),
-  ])
+  const content = await getPageContent("home")
 
   const get = (name: string) => content.find(i => i.name === name)?.value ?? ""
   const textItems = content.filter(i => !i.url)
   const linkItems = content.filter(i => i.url !== null)
+
+  const imageName = process.env.HOME_PAGE_IMAGE_NAME
+  const proxyImageSrc = imageName
+    ? `/api/image?name=${encodeURIComponent(imageName)}`
+    : null
 
   return (
     <main className="page-main home-layout" style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: "3rem", flexWrap: "wrap" }}>
       {/* Text side */}
       <div style={{ flex: 1, minWidth: 260 }}>
         {get("intro") && (
-          <p style={{ fontSize: "0.75rem", letterSpacing: "0.25em", textTransform: "uppercase", color: "var(--muted)", marginBottom: "1.25rem" }}>
+          <h1 style={{
+            fontSize: "1.75rem",
+            fontWeight: 700,
+            letterSpacing: "0.04em",
+            color: "var(--primary)",
+            marginBottom: "1.25rem",
+            lineHeight: 1.2,
+          }}>
             {get("intro")}
-          </p>
+          </h1>
         )}
 
         {textItems
@@ -34,13 +42,14 @@ export default async function HomePage() {
         }
 
         {linkItems.length > 0 && (
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "1.25rem", fontSize: "0.9rem", marginTop: "0.6rem" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "0.6rem", marginTop: "1rem" }}>
             {linkItems.map(i => (
               <a
                 key={i.name}
                 href={i.url!}
                 target={i.url!.startsWith("mailto") ? undefined : "_blank"}
                 rel={i.url!.startsWith("mailto") ? undefined : "noreferrer"}
+                className="pill-link"
               >
                 {i.value}
               </a>
@@ -50,12 +59,19 @@ export default async function HomePage() {
       </div>
 
       {/* Image side */}
-      {imageUrl && (
+      {proxyImageSrc && (
         <div style={{ flexShrink: 0 }}>
-              <ZoomableImage
-            src={imageUrl}
+          <ZoomableImage
+            src={proxyImageSrc}
             alt="Photo of Ved"
-            style={{ width: 220, height: 220, objectFit: "cover", borderRadius: "1.25rem", border: "1px solid var(--border)" }}
+            style={{
+              width: 210,
+              height: 210,
+              objectFit: "cover",
+              borderRadius: "1.25rem",
+              border: "2px solid var(--primary)",
+              boxShadow: "0 4px 20px rgba(131, 34, 50, 0.12)",
+            }}
           />
         </div>
       )}

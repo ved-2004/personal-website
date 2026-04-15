@@ -25,38 +25,73 @@ export default function ResearchProject({
   ].filter(Boolean) as { label: string; url: string }[]
 
   return (
-    <div className="border-t pt-4">
+    <div style={{ borderTop: "1px solid var(--border)", paddingTop: "1.25rem", paddingBottom: "0.25rem" }}>
       <div style={{ display: "flex", gap: "1rem", alignItems: "flex-start" }}>
         {imageUrl && (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={imageUrl}
             alt={title}
-            style={{ width: 56, height: 56, objectFit: "cover", flexShrink: 0, borderRadius: 6, border: "1px solid var(--border)" }}
+            style={{ width: 48, height: 48, objectFit: "cover", flexShrink: 0, borderRadius: 4, border: "1px solid var(--border)" }}
           />
         )}
         <div style={{ flex: 1 }}>
-          <h3 className="font-medium">{title}</h3>
-          {status && <p className="text-sm text-slate-500">{status}</p>}
-
-          <div className="flex items-center gap-3 mt-2 text-sm">
+          <div style={{ fontWeight: 700, fontSize: "1rem", color: "#990000" }}>{title}</div>
+          {status && (
+            <span style={{
+              display: "inline-block",
+              fontSize: "0.7rem",
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              border: "1px solid var(--border)",
+              borderRadius: 3,
+              padding: "0.1rem 0.45rem",
+              color: "var(--muted)",
+              marginTop: "0.35rem",
+            }}>
+              {status}
+            </span>
+          )}
+          <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginTop: "0.5rem", fontSize: "0.875rem", flexWrap: "wrap" }}>
             {abstract && (
               <button
                 onClick={() => setOpen(!open)}
-                className="underline"
                 aria-expanded={open}
+                style={{
+                  background: "none",
+                  border: "none",
+                  color: "var(--link)",
+                  cursor: "pointer",
+                  fontSize: "inherit",
+                  fontFamily: "inherit",
+                  padding: 0,
+                  textDecoration: "underline",
+                  textUnderlineOffset: "3px",
+                }}
               >
-                Abstract
+                {open ? "Hide abstract" : "Abstract"}
               </button>
             )}
             {links.map((l) => (
               <a key={l.label} href={l.url} target="_blank" rel="noreferrer">
-                {l.label}
+                {l.label} ↗
               </a>
             ))}
           </div>
-
-          {open && abstract && <p className="mt-3 text-sm">{abstract}</p>}
+          {open && abstract && (
+            <p style={{
+              marginTop: "0.75rem",
+              fontSize: "0.9rem",
+              lineHeight: 1.7,
+              color: "var(--text)",
+              fontStyle: "italic",
+              borderLeft: "2px solid var(--border)",
+              paddingLeft: "0.75rem",
+              marginBottom: 0,
+            }}>
+              {abstract}
+            </p>
+          )}
         </div>
       </div>
     </div>

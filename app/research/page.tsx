@@ -1,5 +1,4 @@
 import { getResearchProjects } from "@/lib/research"
-import { getImageByName } from "@/lib/images"
 import { getPageContent } from "@/lib/content"
 import ResearchProject from "@/components/ResearchProject"
 import ZoomableImage from "@/components/ZoomableImage"
@@ -7,34 +6,43 @@ import ZoomableImage from "@/components/ZoomableImage"
 export const revalidate = 60
 
 export default async function ResearchPage() {
-  const [projects, heroImageUrl, content] = await Promise.all([
+  const [projects, content] = await Promise.all([
     getResearchProjects(),
-    getImageByName(process.env.RESEARCH_PAGE_IMAGE_NAME ?? ""),
     getPageContent("research"),
   ])
 
   const get = (name: string) => content.find(i => i.name === name)?.value ?? ""
   const heroLinks = content.filter(i => i.name.startsWith("hero-link") && i.url)
 
+  const researchImageName = process.env.RESEARCH_PAGE_IMAGE_NAME
+  const proxyImageSrc = researchImageName
+    ? `/api/image?name=${encodeURIComponent(researchImageName)}`
+    : null
+
   return (
-    <main className="page-main" style={{ display: "flex", flexDirection: "column", gap: "3.5rem" }}>
-      {/* HERO */}
-      <section className="research-hero" style={{ display: "grid", gridTemplateColumns: "220px 1fr", gap: "2rem", alignItems: "center" }}>
-        {heroImageUrl && (
+    <main className="page-main" style={{ display: "flex", flexDirection: "column", gap: "3rem" }}>
+
+      {/* NAME + AFFILIATION HEADER */}
+      <div>
+        <h1 style={{ marginBottom: "0.15rem" }}>Ved Chadderwala</h1>
+        {get("affiliation") && (
+          <p className="muted" style={{ marginBottom: 0 }}>{get("affiliation")}</p>
+        )}
+      </div>
+
+      {/* HERO — photo + blurb + links */}
+      <section className="research-hero" style={{ display: "grid", gridTemplateColumns: "160px 1fr", gap: "1.75rem", alignItems: "flex-start" }}>
+        {proxyImageSrc && (
           <ZoomableImage
-            src={heroImageUrl}
+            src={proxyImageSrc}
             alt="Ved Chadderwala"
-            style={{ width: 220, height: 280, objectFit: "cover", borderRadius: 8, border: "1px solid var(--border)" }}
+            style={{ width: 160, height: 200, objectFit: "cover", borderRadius: 4, border: "1px solid var(--border)" }}
           />
         )}
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-          {get("affiliation") && (
-            <p className="muted">{get("affiliation")}</p>
-          )}
-
+        <div style={{ display: "flex", flexDirection: "column", gap: "0.65rem" }}>
           {heroLinks.length > 0 && (
-            <div style={{ display: "flex", gap: "1.25rem", fontSize: "0.9rem" }}>
+            <div style={{ display: "flex", gap: "1.25rem", fontSize: "0.9rem", flexWrap: "wrap" }}>
               {heroLinks.map(i => (
                 <a
                   key={i.name}
@@ -49,7 +57,7 @@ export default async function ResearchPage() {
           )}
 
           {get("blurb") && (
-            <p style={{ lineHeight: 1.7 }}>{get("blurb")}</p>
+            <p style={{ lineHeight: 1.7, fontSize: "0.95rem", margin: 0 }}>{get("blurb")}</p>
           )}
         </div>
       </section>
@@ -69,7 +77,7 @@ export default async function ResearchPage() {
       <section>
         <h2>Projects</h2>
         {projects.length === 0 && <p className="muted">No projects yet.</p>}
-        <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+        <div style={{ display: "flex", flexDirection: "column" }}>
           {projects.map((proj) => (
             <ResearchProject
               key={proj.id}
@@ -78,7 +86,7 @@ export default async function ResearchPage() {
               abstract={proj.abstract}
               reportUrl={proj.reportUrl}
               demoUrl={proj.demoUrl}
-              imageUrl={proj.imageUrl}
+              imageUrl={proj.imageUrl ? `/api/page-image?pageId=${proj.id}&property=Image&index=0` : null}
             />
           ))}
         </div>

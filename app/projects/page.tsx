@@ -5,6 +5,23 @@ import ImageCarousel from "@/components/ImageCarousel"
 
 export const revalidate = 60
 
+const STATUS_COLORS: Record<string, string> = {
+  "Current":     "#F59E0B",
+  "Completed":   "#22C55E",
+  "Deployed":    "#3B82F6",
+  "In Progress": "#F97316",
+}
+
+function StatusBadge({ status }: { status: string }) {
+  const color = STATUS_COLORS[status] ?? "#94a3b8"
+  return (
+    <span style={{ display: "inline-flex", alignItems: "center", gap: "0.35rem", fontSize: "0.8rem", color: "var(--text)", marginTop: "0.25rem" }}>
+      <span style={{ width: 7, height: 7, borderRadius: "50%", background: color, flexShrink: 0, display: "inline-block" }} />
+      {status}
+    </span>
+  )
+}
+
 function TagList({ tags }: { tags: string[] }) {
   if (tags.length === 0) return null
   return (
@@ -58,49 +75,65 @@ export default async function ProjectsPage() {
           <div style={{ marginTop: "1rem" }}>
             {projects.length === 0 && <p>No entries yet.</p>}
 
-            {projects.map((proj, idx) => (
-              <article
-                key={proj.id}
-                className="project-article"
-                style={{
-                  padding: "1.5rem 0",
-                  borderTop: idx === 0 ? "none" : "1px solid var(--border)",
-                  display: "flex",
-                  gap: "2rem",
-                  alignItems: "flex-start",
-                }}
-              >
-                {/* Text */}
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ color: "#990000", fontSize: "1.2rem", fontWeight: 700 }}>
-                    {proj.title}
-                  </div>
-                  {proj.status && (
-                    <div className="muted" style={{ marginTop: "0.2rem" }}>
-                      {proj.status}
+            {projects.map((proj, idx) => {
+              const proxiedMedia = proj.mediaUrls.map((_, i) =>
+                `/api/page-image?pageId=${proj.id}&property=Media&index=${i}`
+              )
+              return (
+                <article
+                  key={proj.id}
+                  className="project-article"
+                  style={{
+                    padding: "1.5rem 0",
+                    borderTop: idx === 0 ? "none" : "1px solid var(--border)",
+                    display: "flex",
+                    gap: "2rem",
+                    alignItems: "flex-start",
+                  }}
+                >
+                  {/* Text */}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ color: "#990000", fontSize: "1.2rem", fontWeight: 700 }}>
+                      {(proj.url || proj.githubUrl) ? (
+                        <a
+                          href={proj.url ?? proj.githubUrl!}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="project-title-link"
+                        >
+                          {proj.title}
+                        </a>
+                      ) : proj.title}
                     </div>
-                  )}
-                  <TagList tags={proj.tags} />
-                  {proj.description && (
-                    <ExpandableText text={proj.description} />
-                  )}
-                  <TeamLinks members={proj.team} />
-                  <div style={{ display: "flex", gap: "1rem", marginTop: "0.75rem", fontSize: "0.875rem" }}>
-                    {proj.url && (
-                      <a href={proj.url} target="_blank" rel="noreferrer">Visit ↗</a>
+                    {proj.status && <StatusBadge status={proj.status} />}
+                    <TagList tags={proj.tags} />
+                    {proj.description && (
+                      <ExpandableText text={proj.description} />
                     )}
-                    {proj.githubUrl && (
-                      <a href={proj.githubUrl} target="_blank" rel="noreferrer">GitHub ↗</a>
+                    <TeamLinks members={proj.team} />
+                    {(proj.url || proj.githubUrl) && (
+                      <div style={{ display: "flex", gap: "0.5rem", marginTop: "0.75rem", flexWrap: "wrap" }}>
+                        {proj.url && (
+                          <a href={proj.url} target="_blank" rel="noreferrer" className="chip-link">
+                            Visit ↗
+                          </a>
+                        )}
+                        {proj.githubUrl && (
+                          <a href={proj.githubUrl} target="_blank" rel="noreferrer" className="chip-link">
+                            GitHub ↗
+                          </a>
+                        )}
+                      </div>
                     )}
                   </div>
-                </div>
 
-                {/* Project image carousel */}
-                {proj.mediaUrls.length > 0 && (
-                  <ImageCarousel urls={proj.mediaUrls} alt={proj.title} width={160} height={110} />
-                )}
-              </article>
-            ))}
+                  {/* Project image carousel */}
+                  {proxiedMedia.length > 0 && (
+                    <ImageCarousel urls={proxiedMedia} alt={proj.title} width={160} height={110} />
+                  )}
+                </article>
+              )
+            })}
           </div>
         </div>
 
@@ -108,17 +141,14 @@ export default async function ProjectsPage() {
         <div className="projects-divider" style={{ width: "1px", background: "var(--border)", alignSelf: "stretch", flexShrink: 0 }} />
 
         {/* Right: Skills */}
-        <div className="skills-sidebar" style={{ width: 40, flexShrink: 0 }}>
+        <div className="skills-sidebar" style={{ width: 160, flexShrink: 0 }}>
           <h1 style={{ fontSize: "1.5rem", marginBottom: "1rem" }}>Skills</h1>
           {skills.length === 0 && <p className="muted">No entries yet.</p>}
-          <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem" }}>
+          <div className="tag-list" style={{ flexDirection: "column", alignItems: "flex-start" }}>
             {skills.map((skill) => (
-              <div key={skill.id}>
-                <div style={{ fontWeight: 600, fontSize: "0.9rem" }}>{skill.name}</div>
-                {skill.experience && (
-                  <div className="muted" style={{ fontSize: "0.8rem", marginTop: "0.1rem" }}>{skill.experience}</div>
-                )}
-              </div>
+              <span key={skill.id} className="tag" title={skill.experience ?? undefined}>
+                {skill.name}
+              </span>
             ))}
           </div>
         </div>

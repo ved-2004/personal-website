@@ -60,7 +60,7 @@ export default async function ExperiencePage() {
               {exp.iconUrl && (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
-                  src={exp.iconUrl}
+                  src={`/api/page-image?pageId=${exp.id}&property=Icon&index=0`}
                   alt={exp.company}
                   style={{ width: 48, height: 48, objectFit: "contain", flexShrink: 0, borderRadius: 6, border: "1px solid var(--border)" }}
                 />
@@ -85,7 +85,10 @@ export default async function ExperiencePage() {
                 {exp.summary && <p style={{ marginTop: "0.6rem", marginBottom: 0 }}>{exp.summary}</p>}
               </div>
             </div>
-            <MediaGallery urls={exp.mediaUrls} alt={exp.company} />
+            <MediaGallery
+              urls={exp.mediaUrls.map((_, i) => `/api/page-image?pageId=${exp.id}&property=Media&index=${i}`)}
+              alt={exp.company}
+            />
           </article>
         ))}
       </div>
