@@ -1,5 +1,7 @@
 import { getExperiences, ExperienceMeta } from "@/lib/experience"
+import { getPageMarkdown } from "@/lib/notionBlocks"
 import ZoomableImage from "@/components/ZoomableImage"
+import ExpandableSection from "@/components/ExpandableSection"
 
 export const revalidate = 60
 
@@ -39,6 +41,11 @@ function MediaGallery({ urls, alt }: { urls: string[]; alt: string }) {
 
 export default async function ExperiencePage() {
   const experiences: ExperienceMeta[] = await getExperiences()
+
+  // Fetch page body content for all entries in parallel
+  const contents = await Promise.all(
+    experiences.map(exp => getPageMarkdown(exp.id).catch(() => ""))
+  )
 
   return (
     <main className="page-main">
@@ -85,6 +92,10 @@ export default async function ExperiencePage() {
                 {exp.summary && <p style={{ marginTop: "0.6rem", marginBottom: 0 }}>{exp.summary}</p>}
               </div>
             </div>
+
+            {/* Page body content written in Notion */}
+            <ExpandableSection markdown={contents[idx] ?? ""} />
+
             <MediaGallery
               urls={exp.mediaUrls.map((_, i) => `/api/page-image?pageId=${exp.id}&property=Media&index=${i}`)}
               alt={exp.company}

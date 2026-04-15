@@ -204,6 +204,85 @@ hr,
 }
 
 /* =========================
+   Notion page body content (experience / education entries)
+   ========================= */
+.notion-content {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  line-height: 1.75;
+  color: var(--text);
+}
+
+.notion-content p {
+  margin-bottom: 0.6rem;
+}
+
+.notion-content p:last-child {
+  margin-bottom: 0;
+}
+
+.notion-content h1,
+.notion-content h2,
+.notion-content h3 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-top: 1rem;
+  margin-bottom: 0.3rem;
+}
+
+.notion-content ul,
+.notion-content ol {
+  padding-left: 1.4rem;
+  margin-bottom: 0.6rem;
+}
+
+.notion-content ul {
+  list-style-type: disc;
+}
+
+.notion-content ol {
+  list-style-type: decimal;
+}
+
+.notion-content li {
+  margin-bottom: 0.25rem;
+}
+
+.notion-content code {
+  font-family: ui-monospace, monospace;
+  font-size: 0.82rem;
+  background: rgba(126, 178, 221, 0.15);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 0.1rem 0.35rem;
+}
+
+.notion-content pre {
+  background: rgba(15, 23, 42, 0.05);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.85rem 1rem;
+  overflow-x: auto;
+  margin-bottom: 0.75rem;
+}
+
+.notion-content pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 0.82rem;
+}
+
+.notion-content blockquote {
+  border-left: 2px solid var(--border);
+  padding-left: 0.75rem;
+  color: #555;
+  font-style: italic;
+  margin: 0.75rem 0;
+}
+
+/* =========================
    Pill Links (Home page social links)
    ========================= */
 .pill-link {

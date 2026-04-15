@@ -1,5 +1,7 @@
 import { getEducation, EducationMeta } from "@/lib/education"
+import { getPageMarkdown } from "@/lib/notionBlocks"
 import ZoomableImage from "@/components/ZoomableImage"
+import NotionContent from "@/components/NotionContent"
 
 export const revalidate = 60
 
@@ -28,6 +30,11 @@ function MediaGallery({ urls, alt }: { urls: string[]; alt: string }) {
 
 export default async function EducationPage() {
   const entries: EducationMeta[] = await getEducation()
+
+  // Fetch page body content for all entries in parallel
+  const contents = await Promise.all(
+    entries.map(edu => getPageMarkdown(edu.id).catch(() => ""))
+  )
 
   return (
     <main className="page-main">
@@ -81,6 +88,12 @@ export default async function EducationPage() {
                 )}
               </div>
             </div>
+
+            {/* Page body content written in Notion */}
+            {contents[idx]?.trim() && (
+              <NotionContent markdown={contents[idx]} />
+            )}
+
             <MediaGallery
               urls={edu.mediaUrls.map((_, i) => `/api/page-image?pageId=${edu.id}&property=Media&index=${i}`)}
               alt={edu.institution}

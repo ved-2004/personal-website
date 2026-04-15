@@ -1,6 +1,8 @@
 import { getProjects } from "@/lib/projects"
 import { getSkills } from "@/lib/skills"
+import { getPageMarkdown } from "@/lib/notionBlocks"
 import ExpandableText from "@/components/ExpandableText"
+import ExpandableSection from "@/components/ExpandableSection"
 import ImageCarousel from "@/components/ImageCarousel"
 
 export const revalidate = 60
@@ -63,6 +65,11 @@ export default async function ProjectsPage() {
     getSkills(),
   ])
 
+  // Fetch page body content for all projects in parallel
+  const contents = await Promise.all(
+    projects.map(proj => getPageMarkdown(proj.id).catch(() => ""))
+  )
+
   return (
     <main className="page-main">
       <div className="projects-layout" style={{ display: "flex", gap: "3rem", alignItems: "flex-start" }}>
@@ -79,6 +86,7 @@ export default async function ProjectsPage() {
               const proxiedMedia = proj.mediaUrls.map((_, i) =>
                 `/api/page-image?pageId=${proj.id}&property=Media&index=${i}`
               )
+              const content = contents[idx] ?? ""
               return (
                 <article
                   key={proj.id}
@@ -125,6 +133,7 @@ export default async function ProjectsPage() {
                         )}
                       </div>
                     )}
+                    <ExpandableSection markdown={content} />
                   </div>
 
                   {/* Project image carousel */}
